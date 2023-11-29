@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+{%load static%}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Página de Perfil</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.min.js"></script>
+    <style>
+        .profile-img {
+            max-width: 100%;
+            height: auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="alert alert-info display-1 text-center"><alt="" width="100px"> Datos del Usuario</div>
+        <div class="row">
+            
+            <div class="col-md-6 text-center">
+                <img src="{%static 'img/benja.jpg'%}" alt="Imagen de Perfil" class="profile-img">
+            </div>
+            <div class="col-md-6">
+                <h2 class="mb-4">Perfil</h2>
+                <div class="mb-3">
+                    <strong>Nombre:</strong>
+                    <p>{{nombre}}</p>
+                </div>
+                <div class="mb-3">
+                    <strong>Edad:</strong>
+                    <p>{{edad}}</p>
+                </div>
+                <div class="mb-3">
+                    <strong>Correo:</strong>
+                    <p>{{correo}}</p>
+                </div>
+                <div class="mb-3">
+                    <strong>Carrera:</strong>
+                    <p>{{carrera}}</p>
+                </div>
+                <a href="/" class="btn btn-info"><i class="bi bi-chevron-double-left"></i>VOLVER AL INDEX</a>
+            </div>
+        </div>
+    </div>
+
+   
+    
+</body>
+</html>

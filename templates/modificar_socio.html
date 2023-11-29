@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modificar Socio</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+        }
+
+        /* Estilo personalizado para los input */
+        input[type="text"],
+        input[type="password"],
+        input[type="email"] {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+            font-size: 14px;
+        }
+
+        /* Estilo personalizado para el input de observación */
+        textarea[name="observacion"] {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+            font-size: 12px; /* Tamaño de fuente más pequeño */
+        }
+
+        /* Ajustes de estilo para hacerlo más profesional */
+        .card {
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .card-header {
+            background-color: #007bff; /* Color de fondo azul */
+            color: #fff; /* Texto en color blanco */
+            border-bottom: 1px solid #ddd;
+        }
+
+        /* Ajuste de tamaño para el botón */
+        .btn {
+            font-size: 16px;
+            padding: 10px 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container mt-5">
+        <div class="card">
+            <div class="card-header">
+                <h2 class="mb-0">Modificar Socio</h2>
+            </div>
+            <div class="card-body">
+                <form method="post" class="needs-validation" novalidate>
+                    {% csrf_token %}
+                    <div class="form-group">
+                        {{ form.as_p }}
+                    </div>
+                    <div class="form-group">
+                        <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+                        <a href="{% url 'listar_socios' %}" class="btn btn-secondary">Cancelar</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

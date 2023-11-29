@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agregar Socio</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+        }
+
+        /* Estilo personalizado para los input */
+        input[type="text"],
+        input[type="password"],
+        input[type="email"],
+        textarea {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+            font-size: 14px;
+        }
+
+        /* Ajustes de estilo para hacerlo más profesional */
+        .card {
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .card-header {
+            background-color: #007bff; /* Color de fondo azul */
+            color: #fff; /* Texto en color blanco */
+            border-bottom: 1px solid #ddd;
+        }
+
+        /* Ajuste de tamaño para el botón */
+        .btn {
+            font-size: 16px;
+            padding: 10px 20px;
+        }
+
+        /* Estilo personalizado para el input de observación */
+        textarea[name="observacion"] {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+            font-size: 12px; /* Tamaño de fuente más pequeño */
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="card">
+                    <div class="card-header bg-primary text-white">
+                        <h2 class="mb-0">Agregar Socio</h2>
+                    </div>
+                    <div class="card-body">
+                        <div id="alert-message" class="alert alert-danger d-none" role="alert">
+                            Por favor, complete los campos obligatorios:
+                            <ul id="missing-fields-list"></ul>
+                        </div>
+                        <form method="post" class="needs-validation" novalidate>
+                            {% csrf_token %}
+                            <div class="form-group">
+                                <label for="{{ form.nombre.id_for_label }}">Nombre:</label>
+                                {{ form.nombre }}
+                                <div class="invalid-feedback">
+                                    {{ form.nombre.errors }}
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="{{ form.fecha_incorporacion.id_for_label }}">Fecha de Incorporación:</label>
+                                {{ form.fecha_incorporacion }}
+                                <div class="invalid-feedback">
+                                    {{ form.fecha_incorporacion.errors }}
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="{{ form.año_nacimiento.id_for_label }}">Año de Nacimiento:</label>
+                                {{ form.año_nacimiento }}
+                                <div class="invalid-feedback">
+                                    {{ form.año_nacimiento.errors }}
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="{{ form.telefono.id_for_label }}">Teléfono:</label>
+                                {{ form.telefono }}
+                                <div class="invalid-feedback">
+                                    {{ form.telefono.errors }}
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="{{ form.correo_electronico.id_for_label }}">Correo Electrónico:</label>
+                                {{ form.correo_electronico }}
+                                <div class="invalid-feedback">
+                                    {{ form.correo_electronico.errors }}
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="{{ form.sexo.id_for_label }}">Sexo:</label>
+                                {{ form.sexo }}
+                                <div class="invalid-feedback">
+                                    {{ form.sexo.errors }}
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="{{ form.estado.id_for_label }}">Estado:</label>
+                                {{ form.estado }}
+                                <div class="invalid-feedback">
+                                    {{ form.estado.errors }}
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="{{ form.observacion.id_for_label }}">Observación:</label>
+                                <textarea class="form-control" id="{{ form.observacion.id_for_label }}"
+                                    name="{{ form.observacion.name }}" rows="4"></textarea>
+                                <!-- No se requiere validación para la observación -->
+                            </div>
+                            <button type="button" class="btn btn-primary" onclick="validateForm()">Guardar</button>
+                            <a href="{% url 'listar_socios' %}" class="btn btn-secondary">Cancelar</a>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        function validateForm() {
+            var nombre = document.getElementById('{{ form.nombre.id_for_label }}');
+            var fechaIncorporacion = document.getElementById('{{ form.fecha_incorporacion.id_for_label }}');
+            var añoNacimiento = document.getElementById('{{ form.año_nacimiento.id_for_label }}');
+            var telefono = document.getElementById('{{ form.telefono.id_for_label }}');
+            var correoElectronico = document.getElementById('{{ form.correo_electronico.id_for_label }}');
+            var sexo = document.getElementById('{{ form.sexo.id_for_label }}');
+            var estado = document.getElementById('{{ form.estado.id_for_label }}');
+            var alertMessage = document.getElementById('alert-message');
+            var missingFieldsList = document.getElementById('missing-fields-list');
+
+            // Resetear estilos y mensajes
+            resetStylesAndMessages();
+
+            var missingFields = [];
+
+            if (nombre.value === '') {
+                missingFields.push('Nombre');
+                markFieldAsInvalid(nombre);
+            }
+
+            if (fechaIncorporacion.value === '') {
+                missingFields.push('Fecha de Incorporación');
+                markFieldAsInvalid(fechaIncorporacion);
+            }
+
+            if (añoNacimiento.value === '') {
+                missingFields.push('Año de Nacimiento');
+                markFieldAsInvalid(añoNacimiento);
+            }
+
+            if (telefono.value === '') {
+                missingFields.push('Teléfono');
+                markFieldAsInvalid(telefono);
+            }
+
+            if (correoElectronico.value === '') {
+                missingFields.push('Correo Electrónico');
+                markFieldAsInvalid(correoElectronico);
+            }
+
+            if (sexo.value === '') {
+                missingFields.push('Sexo');
+                markFieldAsInvalid(sexo);
+            }
+
+            if (estado.value === '') {
+                missingFields.push('Estado');
+                markFieldAsInvalid(estado);
+            }
+
+            if (missingFields.length > 0) {
+                alertMessage.classList.remove('d-none');
+                missingFieldsList.innerHTML = '';
+                missingFields.forEach(function (field) {
+                    var listItem = document.createElement('li');
+                    listItem.textContent = field;
+                    missingFieldsList.appendChild(listItem);
+                });
+            } else {
+                document.getElementsByClassName('needs-validation')[0].submit();
+            }
+        }
+
+        function resetStylesAndMessages() {
+            var alertMessage = document.getElementById('alert-message');
+            var missingFieldsList = document.getElementById('missing-fields-list');
+            alertMessage.classList.add('d-none');
+            missingFieldsList.innerHTML = '';
+
+            // Obtén todos los formularios a los que queremos aplicar estilos de validación de Bootstrap personalizados
+            var forms = document.getElementsByClassName('needs-validation');
+            // Haz un bucle sobre ellos y evita su envío
+            var validation = Array.prototype.filter.call(forms, function (form) {
+                form.classList.remove('was-validated');
+            });
+        }
+
+        function markFieldAsInvalid(field) {
+            field.classList.add('is-invalid');
+        }
+    </script>
+</body>
+
+</html>
