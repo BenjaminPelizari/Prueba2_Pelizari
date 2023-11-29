@@ -61,7 +61,8 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'Prueba2_Pelizari.wsgi.application'
 
-
+import pymysql
+pymysql.install_as_MySQLdb()
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
@@ -79,7 +80,7 @@ USE_I18N = True
 
 USE_TZ = True
 
-STATIC_URL = '/static/'
+# Configuración de archivos estáticosSTATIC_URL = '/static/'
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static'),
 ]
