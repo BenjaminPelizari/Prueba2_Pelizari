@@ -126,7 +126,7 @@
                                 <label for="{{ form.observacion.id_for_label }}">Observación:</label>
                                 <textarea class="form-control" id="{{ form.observacion.id_for_label }}"
                                     name="{{ form.observacion.name }}" rows="4"></textarea>
-                                <!-- No se requiere validación para la observación -->
+                           
                             </div>
                             <button type="button" class="btn btn-primary" onclick="validateForm()">Guardar</button>
                             <a href="{% url 'listar_socios' %}" class="btn btn-secondary">Cancelar</a>
@@ -148,7 +148,7 @@
             var alertMessage = document.getElementById('alert-message');
             var missingFieldsList = document.getElementById('missing-fields-list');
 
-            // Resetear estilos y mensajes
+    
             resetStylesAndMessages();
 
             var missingFields = [];
@@ -207,9 +207,7 @@
             alertMessage.classList.add('d-none');
             missingFieldsList.innerHTML = '';
 
-            // Obtén todos los formularios a los que queremos aplicar estilos de validación de Bootstrap personalizados
             var forms = document.getElementsByClassName('needs-validation');
-            // Haz un bucle sobre ellos y evita su envío
             var validation = Array.prototype.filter.call(forms, function (form) {
                 form.classList.remove('was-validated');
             });
