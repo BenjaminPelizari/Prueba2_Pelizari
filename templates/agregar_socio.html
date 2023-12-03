@@ -9,53 +9,6 @@
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
-    <style>
-        body {
-            font-family: 'Arial', sans-serif;
-        }
-
-        /* Estilo personalizado para los input */
-        input[type="text"],
-        input[type="password"],
-        input[type="email"],
-        textarea {
-            width: 100%;
-            padding: 10px;
-            margin-bottom: 15px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            box-sizing: border-box;
-            font-size: 14px;
-        }
-
-        /* Ajustes de estilo para hacerlo más profesional */
-        .card {
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        }
-
-        .card-header {
-            background-color: #007bff; /* Color de fondo azul */
-            color: #fff; /* Texto en color blanco */
-            border-bottom: 1px solid #ddd;
-        }
-
-        /* Ajuste de tamaño para el botón */
-        .btn {
-            font-size: 16px;
-            padding: 10px 20px;
-        }
-
-        /* Estilo personalizado para el input de observación */
-        textarea[name="observacion"] {
-            width: 100%;
-            padding: 8px;
-            margin-bottom: 15px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            box-sizing: border-box;
-            font-size: 12px; /* Tamaño de fuente más pequeño */
-        }
-    </style>
 </head>
 
 <body>
@@ -70,6 +23,9 @@
                         <div id="alert-message" class="alert alert-danger d-none" role="alert">
                             Por favor, complete los campos obligatorios:
                             <ul id="missing-fields-list"></ul>
+                        </div>
+                        <div id="invalid-fields-alert" class="alert alert-danger d-none" role="alert">
+                            Por favor, ingrese datos válidos en los campos resaltados.
                         </div>
                         <form method="post" class="needs-validation" novalidate>
                             {% csrf_token %}
@@ -124,9 +80,8 @@
                             </div>
                             <div class="form-group">
                                 <label for="{{ form.observacion.id_for_label }}">Observación:</label>
-                                <textarea class="form-control" id="{{ form.observacion.id_for_label }}"
-                                    name="{{ form.observacion.name }}" rows="4"></textarea>
-                           
+                                <textarea class="form-control" id="{{ form.observacion.id_for_label }}" name="{{ form.observacion.name }}" rows="4"></textarea>
+                               
                             </div>
                             <button type="button" class="btn btn-primary" onclick="validateForm()">Guardar</button>
                             <a href="{% url 'listar_socios' %}" class="btn btn-secondary">Cancelar</a>
@@ -137,80 +92,109 @@
         </div>
     </div>
     <script>
+     
+        (function () {
+            'use strict';
+            window.addEventListener('load', function () {
+               
+                var forms = document.getElementsByClassName('needs-validation');
+              
+                var validation = Array.prototype.filter.call(forms, function (form) {
+                    form.addEventListener('submit', function (event) {
+                        if (form.checkValidity() === false) {
+                            event.preventDefault();
+                            event.stopPropagation();
+                            showMissingFieldsAlert();
+                        }
+                        form.classList.add('was-validated');
+                    }, false);
+                });
+            }, false);
+        })();
+
         function validateForm() {
-            var nombre = document.getElementById('{{ form.nombre.id_for_label }}');
-            var fechaIncorporacion = document.getElementById('{{ form.fecha_incorporacion.id_for_label }}');
-            var añoNacimiento = document.getElementById('{{ form.año_nacimiento.id_for_label }}');
-            var telefono = document.getElementById('{{ form.telefono.id_for_label }}');
-            var correoElectronico = document.getElementById('{{ form.correo_electronico.id_for_label }}');
-            var sexo = document.getElementById('{{ form.sexo.id_for_label }}');
-            var estado = document.getElementById('{{ form.estado.id_for_label }}');
-            var alertMessage = document.getElementById('alert-message');
-            var missingFieldsList = document.getElementById('missing-fields-list');
-
-    
-            resetStylesAndMessages();
-
+            var form = document.querySelector('.needs-validation');
             var missingFields = [];
+            var invalidFields = [];
 
-            if (nombre.value === '') {
+      
+            hideMissingFieldsAlert();
+
+       
+            if (!form.nombre.value) {
                 missingFields.push('Nombre');
-                markFieldAsInvalid(nombre);
+                markFieldAsInvalid(form.nombre);
             }
-
-            if (fechaIncorporacion.value === '') {
+            if (!form.fecha_incorporacion.value) {
                 missingFields.push('Fecha de Incorporación');
-                markFieldAsInvalid(fechaIncorporacion);
+                markFieldAsInvalid(form.fecha_incorporacion);
             }
-
-            if (añoNacimiento.value === '') {
+            if (!form.año_nacimiento.value) {
                 missingFields.push('Año de Nacimiento');
-                markFieldAsInvalid(añoNacimiento);
+                markFieldAsInvalid(form.año_nacimiento);
             }
-
-            if (telefono.value === '') {
-                missingFields.push('Teléfono');
-                markFieldAsInvalid(telefono);
+            if (!form.telefono.value || !isValidNumber(form.telefono.value) || form.telefono.value.length > 12) {
+                invalidFields.push('Teléfono');
+                markFieldAsInvalid(form.telefono);
             }
-
-            if (correoElectronico.value === '') {
-                missingFields.push('Correo Electrónico');
-                markFieldAsInvalid(correoElectronico);
+            if (!form.correo_electronico.value || !isValidEmail(form.correo_electronico.value)) {
+                invalidFields.push('Correo Electrónico');
+                markFieldAsInvalid(form.correo_electronico);
             }
-
-            if (sexo.value === '') {
+            if (!form.sexo.value) {
                 missingFields.push('Sexo');
-                markFieldAsInvalid(sexo);
+                markFieldAsInvalid(form.sexo);
             }
-
-            if (estado.value === '') {
+            if (!form.estado.value) {
                 missingFields.push('Estado');
-                markFieldAsInvalid(estado);
+                markFieldAsInvalid(form.estado);
             }
 
             if (missingFields.length > 0) {
-                alertMessage.classList.remove('d-none');
-                missingFieldsList.innerHTML = '';
-                missingFields.forEach(function (field) {
-                    var listItem = document.createElement('li');
-                    listItem.textContent = field;
-                    missingFieldsList.appendChild(listItem);
-                });
-            } else {
-                document.getElementsByClassName('needs-validation')[0].submit();
+                showMissingFieldsAlert(missingFields);
+                return;
             }
+
+            if (invalidFields.length > 0) {
+                showInvalidFieldsAlert();
+                return;
+            }
+
+            
+            form.submit();
         }
 
-        function resetStylesAndMessages() {
+        function showMissingFieldsAlert(missingFields) {
             var alertMessage = document.getElementById('alert-message');
             var missingFieldsList = document.getElementById('missing-fields-list');
-            alertMessage.classList.add('d-none');
             missingFieldsList.innerHTML = '';
 
-            var forms = document.getElementsByClassName('needs-validation');
-            var validation = Array.prototype.filter.call(forms, function (form) {
-                form.classList.remove('was-validated');
+            missingFields.forEach(function (field) {
+                var listItem = document.createElement('li');
+                listItem.textContent = field;
+                missingFieldsList.appendChild(listItem);
             });
+
+            alertMessage.classList.remove('d-none');
+        }
+
+        function hideMissingFieldsAlert() {
+            var alertMessage = document.getElementById('alert-message');
+            alertMessage.classList.add('d-none');
+        }
+
+        function showInvalidFieldsAlert() {
+            var invalidFieldsAlert = document.getElementById('invalid-fields-alert');
+            invalidFieldsAlert.classList.remove('d-none');
+        }
+
+        function isValidNumber(value) {
+            return /^\d+$/.test(value);
+        }
+
+        function isValidEmail(value) {
+            var emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return emailRegex.test(value);
         }
 
         function markFieldAsInvalid(field) {
